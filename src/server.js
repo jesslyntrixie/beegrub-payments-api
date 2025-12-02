@@ -2,11 +2,11 @@ import express from 'express';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import cors from 'cors';
-import { config, validateConfig } from './config.js';
+import { config, validateEnv } from './config.js';
 import { createQrisTransaction, verifyNotificationSignature } from './lib/midtrans.js';
 import { markPaymentStatus } from './lib/supabase.js';
 
-validateConfig();
+validateEnv();
 
 export const createApp = () => {
   const app = express();
@@ -84,6 +84,31 @@ export const createApp = () => {
     }
 
     res.json({ received: true });
+  });
+
+  // Demo-only endpoint: simulate successful payment without calling Midtrans.
+  // Useful for university presentations or local testing without real money.
+  app.post('/demo/payments/complete', async (req, res) => {
+    const { orderId } = req.body || {};
+
+    if (!orderId) {
+      return res.status(400).json({ error: 'orderId is required' });
+    }
+
+    try {
+      await markPaymentStatus({
+        orderId,
+        status: 'completed',
+        paidAt: new Date().toISOString(),
+        gatewayResponse: { source: 'demo-payments-complete' },
+      });
+
+      res.json({ ok: true, orderId, status: 'completed' });
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Failed to simulate payment completion', error);
+      res.status(500).json({ error: 'Failed to complete demo payment' });
+    }
   });
 
   return app;
