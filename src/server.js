@@ -122,3 +122,4 @@ if (process.env.NODE_ENV !== 'test') {
     console.log(`BeeGrub Payments API listening on port ${port}`);
   });
 }
+export default createApp();
