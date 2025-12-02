@@ -33,7 +33,11 @@ export const createApp = () => {
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('Failed creating QRIS transaction', error);
-      res.status(502).json({ error: 'Unable to create payment at the moment.' });
+      res.status(502).json({ 
+        error: 'Unable to create payment at the moment.',
+        details: error.message,
+        stack: process.env.NODE_ENV !== 'production' ? error.stack : undefined
+      });
     }
   });
 
