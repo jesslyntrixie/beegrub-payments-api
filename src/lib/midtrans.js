@@ -40,7 +40,7 @@ export const createQrisTransaction = async ({ orderId, grossAmount, amount, cust
     enabled_payments: ['qris', 'gopay'],
     qris: {
       acquirer: 'gopay',
-    },
+    }
   };
 
   return snap.createTransaction(payload);
