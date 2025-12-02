@@ -16,26 +16,31 @@ export const createQrisTransaction = async ({ orderId, grossAmount, amount, cust
   }
 
   const payload = {
-    payment_type: 'qris',
     transaction_details: {
       order_id: orderId,
       gross_amount: finalAmount,
     },
     customer_details: {
-      first_name: customer?.name || 'BeeGrub Student',
-      email: customer?.email,
-      phone: customer?.phone,
+      first_name: customer?.name || customer?.first_name || 'BeeGrub Student',
+      last_name: customer?.last_name || '',
+      email: customer?.email || 'student@beegrub.app',
+      phone: customer?.phone || '+628123456789',
     },
-    item_details: items.map((item) => ({
+    item_details: items.length > 0 ? items.map((item) => ({
       id: item.id,
       price: item.price,
       quantity: item.quantity,
       name: item.name,
-    })),
+    })) : [{
+      id: 'beegrub-order',
+      price: finalAmount,
+      quantity: 1,
+      name: 'BeeGrub Order',
+    }],
+    enabled_payments: ['qris', 'gopay'],
     qris: {
       acquirer: 'gopay',
     },
-    custom_field1: 'BeeGrub QRIS',
   };
 
   return snap.createTransaction(payload);
