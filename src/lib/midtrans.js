@@ -37,7 +37,7 @@ export const createQrisTransaction = async ({ orderId, grossAmount, amount, cust
       quantity: 1,
       name: 'BeeGrub Order',
     }],
-    enabled_payments: ['qris', 'shopeepay'],
+    enabled_payments: ['qris', 'shopeepay', 'gopay'],
     qris: {
       acquirer: ['shopeepay'],
     }
